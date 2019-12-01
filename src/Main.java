@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Main {
 
     private static int age = 18;
@@ -14,9 +16,17 @@ public class Main {
         double d1 = 8.0d;//双精度浮点型,默认值为0.0d
         char c1 = 'c';//字节数为2，默认值为/u0000
         char str = 'b';//Java里面取值就近原则
+        e = e+10;//类里面不允许直接写表达式，需要在方法中写
+        Scanner input = new Scanner(System.in);
+        System.out.println("请输入一个数字:");
+        int bb = input.nextInt();
+        System.out.println(bb);
 
         System.out.println("Hello Word!" + age);
         testFn();
+        if(bb>e && bb>20){
+            System.out.println(bb+e);
+        }
     }
 
     /*
