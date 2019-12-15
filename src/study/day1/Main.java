@@ -43,7 +43,7 @@ public class Main {
         int codeBlue = 0;
         for(String x:sysRedBall){
             for(String y:userRedBall){
-                if(x == y)
+                if(x.equals(y))
                     codeRed ++;
             }
         }
