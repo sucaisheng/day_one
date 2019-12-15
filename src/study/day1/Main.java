@@ -1,86 +1,147 @@
 package study.day1;
 
+import java.util.Arrays;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
-
-    private static int age = 18;
-    static char str = 'c';
-    static String str1 = "sucaisheng";
-
-    public static void main(String[] args){
-        /**
-         * boolean b = true;//不确定 默认值为false
-         *         byte c = 1;
-         *         short d = 2;
-         *         int e = 4;
-         *         long f = 8;
-         *         float f1 = 10.4f;//单精度浮点型所占字节数为4,默认值为0.0f
-         *         double d1 = 8.0d;//双精度浮点型,默认值为0.0d
-         *         char c1 = 'c';//字节数为2，默认值为/u0000
-         *         char str = 'b';//Java里面取值就近原则
-         *         e = e+10;//类里面不允许直接写表达式，需要在方法中写
-         *         Scanner input = new Scanner(System.in);
-         *         System.out.println("请输入一个数字:");
-         *         int bb = input.nextInt();
-         *         System.out.println(bb);
-         *
-         *         System.out.println("Hello Word!" + age);
-         *         testFn();
-         *         if(bb>e && bb>20){
-         *             System.out.println(bb+e);
-         *         }
-         */
-        int i,mark;
-        int[] a = new int[10];
-        for(i = 0;i < a.length;i++){
-            a[i] = i;
-        }
+    public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        int  c;
-        do {
-            mark = 0;
-            System.out.println("请输入一个数:");
-            c = input.nextInt();
-            for(i = 0;i < a.length;i++){
-                if(c == a[i]){
-                    mark = 1;
-                    break;
-                }
+        String[] pool = getPool();
+        String[] sysRedBall = getRedBall(pool);
+        String sysBlueBall = getBullBall(pool);
+        System.out.println("自己选取球号请输入1，机器随机选择球号请输入2");
+        String[] userRedBall = new String[33];
+        String userBlueBall = null;
+        int mark;
+        mark = input.nextInt();
+        if(mark == 2){
+            userRedBall = getRedBall(pool);
+            userBlueBall = getBullBall(pool);
+        }
+        else if(mark == 1){
+            System.out.println("请输入你想要选取的红色号码：");
+            int redBall[] = new int[6];
+            for(int i = 0; i < 6; i ++){
+                redBall[i] = input.nextInt();
             }
-            if(mark == 1){
-                System.out.println("猜的数在其中!");
+            System.out.println("请输入你想要的蓝色球号码：");
+            int blueBall;
+            blueBall = input.nextInt();
+            userRedBall = getRedBall(pool, redBall);
+            userBlueBall = getBullBall(pool, blueBall);
+        }
+        
+        System.out.println("本周中奖号码：");
+        System.out.println(Arrays.toString(sysRedBall));
+        System.out.println(sysBlueBall);
+        System.out.println("用户购买的号码：");
+        System.out.println(Arrays.toString(userRedBall));
+        System.out.println(userBlueBall);
+
+        int codeRed = 0;
+        int codeBlue = 0;
+        for(String x:sysRedBall){
+            for(String y:userRedBall){
+                if(x == y)
+                    codeRed ++;
             }
-            else{
-                System.out.println("猜的数不对，请再次猜");
-            }
-        }while(c > 0);
-        System.out.println("请输入需要打印的三角形边数：");
-        int n;
-        n = input.nextInt();
-        printAngle(n);
+        }
+        if(sysBlueBall == userBlueBall)
+            codeBlue ++;
+        System.out.println("中奖情况：");
+        System.out.println(getPrise(codeRed, codeBlue));
+
+
+    }
+    public static void CaiSeQiu(){
+        System.out.println(Arrays.toString(getPool()));
 
     }
 
     /*
-     *打印字符str1
+    *构造彩色球的奖池pool
      */
-    public static void testFn(){
-        System.out.println(str);
+    private static String[] getPool(){
+        String[] pool = new String[33];
+        int i;
+        int index = pool.length;
+        for(i = 0; i< index; i++){
+            if(i < 9){
+                pool[i] = "0" + (i + 1);
+            }
+            else
+                pool[i] = (i + 1) + "";
+        }
+        return pool;
     }
 
-    public static void printAngle(int num){
-        int i,j;
-        for(i = 1;i <= num;i++){
-            for(j = 1;j <= num-i;j++){
-                System.out.print(" ");
-            }
-
-            for(j = 0;j < i * 2-1;j++){
-                System.out.print("*");
-            }
-            System.out.println();
+    /*
+    *获取红色球
+     */
+    public static String[] getRedBall(String[] pool){
+        String[] redBall = new String[6];
+        boolean[] pool1 = new boolean[33];
+        int index = 0;
+        Random r = new Random();
+        while(true){
+            int rr = r.nextInt(33);
+            if(pool1[rr])
+                continue;
+            pool1[rr] = true;
+            redBall[index] = pool[rr];
+            if(++ index == 6)
+                break;
         }
+        return redBall;
+    }
+
+    /*
+    *获取蓝色球
+     */
+    private static String getBullBall(String[] pool){
+        Random r = new Random();
+        String bullBall = pool[r.nextInt(16)];
+        return bullBall;
+    }
+
+    /*
+    *人工选取红色球
+     */
+    private static String[] getRedBall(String[] pool, int[] red){
+        String[] redBall = new String[6];
+        for (int i = 0; i < 6; i ++){
+            redBall[i] = pool[red[i] - 1];
+        }
+        return redBall;
+    }
+
+    /*
+    *人工选取蓝色球
+     */
+    private static String getBullBall(String[] pool, int bull){
+        String bullBall = pool[bull - 1];
+        return bullBall;
+    }
+
+    /*
+    *中奖情况判断
+     */
+    private static String getPrise(int codeRed, int codeBlue){
+        if(codeRed == 6 && codeBlue == 1)
+            return("一等奖");
+        else if(codeRed == 6 && codeBlue == 0)
+            return("二等奖");
+        else if(codeRed == 5 && codeBlue == 1)
+            return("三等奖");
+        else if((codeBlue + codeRed) == 5)
+            return("四等奖");
+        else if((codeBlue + codeRed) == 4)
+            return("五等奖");
+        else if(codeBlue == 1 && codeRed < 3)
+            return("六等奖");
+        else
+            return("未中奖");
     }
 
 }
